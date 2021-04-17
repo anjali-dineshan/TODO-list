@@ -14,8 +14,8 @@ function addItem()
         li.innerHTML=` <div class="card"><div class="card-body">
                             <h5 class="card-title">${itemValue}</h5>
                             <div class="stopwatch-container">
-                            <a id="stopwatch-btn" onclick="startStop()"><i id="start-btn" class="fa fa-play" aria-hidden="true"></i></a>
-                            <span id="display-stopwatch">00:00:00</span>
+                            <a class="stopwatch-btn" id="startstopBtn"><i id="start-btn" class="fa fa-play" aria-hidden="true"></i></a>
+                            <span id="display-stopwatch" class="display">00:00:00</span>
                             </div>
                             <a class="btn btn-default"></a>
                             </div></div>`;
@@ -38,6 +38,13 @@ function addItem()
     {
        closeIcon[i].addEventListener('click', removeItem); 
     }
+
+    //timer fun calling
+    var stopwatchBtn = document.getElementsByClassName('stopwatch-btn'); 
+    for (var i = 0; i < stopwatchBtn.length; i++) 
+    {
+        stopwatchBtn[i].addEventListener('click', startStop); 
+    }
  
 }
 //removing entire list
@@ -49,13 +56,13 @@ function removeList()
 
 //Stopwtach functionality start
 
-//define variable to hold h/m/s
+    //define variable to hold h/m/s
     let second=0;
     let minute=0;
     let hour=0;
 
 //define a variable to hold setinterval fun
-let interval=null;
+let interval;
 
 //define a variable to hold stopwatch status
 let status="stopped";
@@ -65,8 +72,11 @@ let status="stopped";
     let displayMinute=0;
     let displayHour=0;
 
-function stopwatch()
+
+
+function stopwatch(display)
 {
+    console.log("hai")
     //increment second
     second++;
 
@@ -93,7 +103,7 @@ function stopwatch()
     }
     if(minute<10)
     {
-        displayMinute="0"+minute;
+       displayMinute="0"+minute;
     }
     else
     {
@@ -109,26 +119,34 @@ function stopwatch()
     }
 
 
-    //display stopwatch
-    document.getElementById("display-stopwatch").innerHTML=displayHour + ":" + displayMinute + ":" + displaySecond; 
+
+    display.innerHTML=displayHour + ":" + displayMinute + ":" + displaySecond; 
+    
 }
+
 
 // function for start and stop the stop watch
 function startStop()
 {
-    if(status=="stopped")
+
+
+    // used to access perticular icon 
+    let strtBtnParent=this.parentElement.children[0]; //a tag of icon
+    let strtBtn=strtBtnParent.children[0]; //icon tag
+    // if(status=="stopped")
+    if(!interval)
     {
+       let display=this.parentElement.children[1]
         //start the stopwatch
-        interval=window.setInterval(stopwatch,1000);
-        document.getElementById("start-btn").className="fa fa-pause";
-        status="started";
+        interval=window.setInterval(function(){stopwatch(display)}, 1000);
+        strtBtn.className="fa fa-pause";
     }
-    else{
+    else
+    {
         window.clearInterval(interval);
-        document.getElementById("start-btn").className="fa fa-play";
-        status="stopped";
+        strtBtn.className="fa fa-play";
+        interval=false;
+
     }
 
 }
-
-
